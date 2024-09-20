@@ -1,40 +1,16 @@
-import {NextResponse} from "next/server";
 import csv from "csv-parser"
 import fs from "fs"
 import path from "path"
+
+import {NextResponse} from "next/server";
+
+import {sortByCreateAt, sortByFilenameAsc, sortByFilenameDesc} from "@/utils";
 
 export async function GET(request) {
     const filePath = path.resolve("src/public/data.csv");
     const result = [];
     let results = {}
     let sortedResult = {}
-
-    const sortByFilenameAsc = (result) => {
-        // Sort the result by filenames
-        return Object.fromEntries(
-            Object.entries(result).sort(([, valueA], [, valueB]) => {
-                return valueA.localeCompare(valueB);
-            })
-        );
-    }
-
-    const sortByFilenameDesc = (result) => {
-        // Sort the result by filename in descending order
-        return Object.fromEntries(
-            Object.entries(result).sort(([, valueA], [, valueB]) => {
-                return valueB.localeCompare(valueA);
-            })
-        );
-    }
-
-    const sortByCreateAt = (result) => {
-        // Sort the object by created at
-        return Object.fromEntries(
-            Object.entries(result).sort(([keyA], [keyB]) => {
-                return new Date(keyA) - new Date(keyB); // Sorting by date
-            })
-        );
-    }
 
     // We read the file into a variable
     const readCSV = () => {
@@ -79,6 +55,8 @@ export async function GET(request) {
         default:
             sortedResult = fetchedResult;
     }
+
+    console.log(sortedResult)
 
     return NextResponse.json({
         sortedResult
